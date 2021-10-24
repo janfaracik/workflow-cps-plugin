@@ -24,7 +24,7 @@
   -->
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler" xmlns:wfe="/org/jenkinsci/plugins/workflow/editor">
-  <f:entry title="${%Script}" field="script">
+  <f:entry title="${%Script}" field="script" class="jenkins-form-item--full-width">
     <wfe:workflow-editor />
   </f:entry>
   <f:entry field="sandbox">
