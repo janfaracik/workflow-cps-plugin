@@ -108,7 +108,7 @@ public abstract class SnippetizerLink implements ExtensionPoint {
      */
     @NonNull
     public String getIcon() {
-        return "icon-help icon-md";
+        return inNewWindow() ? "symbol-external" : "symbol-help-circle";
     }
 
     /**
@@ -208,6 +208,11 @@ public abstract class SnippetizerLink implements ExtensionPoint {
         @Override
         public String getDisplayName() {
             return Messages.SnippetizerLink_ExamplesLink_displayName();
+        }
+
+        @Override
+        public boolean inNewWindow() {
+            return true;
         }
     }
 
