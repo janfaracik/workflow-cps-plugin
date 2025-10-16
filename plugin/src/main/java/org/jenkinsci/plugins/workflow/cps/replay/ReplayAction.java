@@ -65,6 +65,11 @@ import java.util.logging.Logger;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
 import jenkins.model.TransientActionFactory;
+import jenkins.model.menu.Group;
+import jenkins.model.menu.Semantic;
+import jenkins.model.menu.event.DropdownEvent;
+import jenkins.model.menu.event.Event;
+import jenkins.model.menu.event.LinkEvent;
 import jenkins.scm.api.SCMRevisionAction;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
@@ -113,6 +118,33 @@ public class ReplayAction implements Action {
     @Override
     public String getUrlName() {
         return isEnabled() || isRebuildEnabled() ? "replay" : null;
+    }
+
+    public Group getGroup() {
+        return Group.FIRST_IN_APP_BAR;
+    }
+
+    public Event getEvent() {
+        String urlName = getUrlName();
+        return DropdownEvent.of(LinkEvent.of(urlName), List.of(new Action() {
+            @Override
+            public String getIconFileName() {
+                return "symbol-arrow-redo-outline plugin-ionicons-api";
+            }
+
+            @Override
+            public String getDisplayName() {
+                return "Edit Pipeline and replay";
+            }
+
+            public Event getEvent() {
+                return LinkEvent.of(urlName);
+            }
+        }));
+    }
+
+    public Semantic getSemantic() {
+        return Semantic.BUILD;
     }
 
     /** Poke for an execution without blocking - may be null if run is very fresh or has not lazy-loaded yet. */
@@ -448,7 +480,8 @@ public class ReplayAction implements Action {
         @Override
         public Collection<? extends Action> createFor(Run run) {
             return run instanceof FlowExecutionOwner.Executable
-                            && run.getParent() instanceof ParameterizedJobMixIn.ParameterizedJob
+                                    && run.getParent() instanceof ParameterizedJobMixIn.ParameterizedJob
+                            || !run.isBuilding()
                     ? Collections.<Action>singleton(new ReplayAction(run))
                     : Collections.<Action>emptySet();
         }
