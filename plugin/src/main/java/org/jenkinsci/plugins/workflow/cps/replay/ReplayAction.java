@@ -480,8 +480,8 @@ public class ReplayAction implements Action {
         @Override
         public Collection<? extends Action> createFor(Run run) {
             return run instanceof FlowExecutionOwner.Executable
-                                    && run.getParent() instanceof ParameterizedJobMixIn.ParameterizedJob
-                            || !run.isBuilding()
+                            && run.getParent() instanceof ParameterizedJobMixIn.ParameterizedJob
+                            && !run.isBuilding()
                     ? Collections.<Action>singleton(new ReplayAction(run))
                     : Collections.<Action>emptySet();
         }
